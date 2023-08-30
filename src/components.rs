@@ -64,14 +64,51 @@ pub fn Push(cx: Scope) -> Element{
     println!("{:?}",record)
   }
   let par = use_state(cx, ||("".to_string(), "".to_string(), "".to_string()));  
-  let (name, last, age) =
+  let (name, last, age) = par.get();
   render!{
-    "Push"
+    "Push",
     form{
-      input{
-        r#type:"text",
-
-      }
+      class:"check-io-form",
+      prevent_default:"onsubmit",
+      onsubmit: move |_|{
+        println!("{name} {last} {age}")
+      },
+      div{
+        label{
+          r#for:"name",
+          "name",
+        },
+        input{
+          r#type:"text",
+          name:"name",
+          value:"{name}",
+          oninput: move|e| par.set((e.value.clone(),last.clone(), age.clone()))
+        },
+      },
+      div{
+        label{
+          r#for:"last",
+          "last"
+        },
+        input{
+          r#type:"text",
+          name:"last",
+          value:"{last}",
+          oninput: move|e| par.set((name.clone(),e.value.clone(), age.clone()))
+        },
+      },
+      div{
+        label{
+          r#for:"age",
+          "age"
+        },
+        input{
+          r#type:"text",
+          name:"age",
+          value:"{age}",
+          oninput: move|e| par.set((name.clone(),last.clone(), e.value.clone()))
+        }
+      },
       input{
         r#type:"submit"
       }
