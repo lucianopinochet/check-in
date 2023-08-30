@@ -1,9 +1,24 @@
 #![allow(non_snake_case)]
 
+mod components;
+
 use dioxus_router::prelude::*;
 use dioxus::prelude::*;
 use log::LevelFilter;
+use components::*;
 
+#[rustfmt::skip]
+#[derive(Clone, Routable, Debug, PartialEq)]
+pub enum Route{
+  #[layout(NavBar)]
+    #[route("/")]
+    Home{},
+    #[route("/push")]
+    Push{},
+  #[end_layout]
+	#[route("/..notfound")]
+	NotFound{}
+}
 fn main() {
     // Init debug
     dioxus_logger::init(LevelFilter::Info).expect("failed to init logger");    
@@ -11,43 +26,9 @@ fn main() {
 }
 fn app(cx: Scope) -> Element {
     render!{
+        style {include_str!("./style.css")},
         Router::<Route> {}
     }
 }
-#[derive(Clone, Routable, Debug, PartialEq)]
-enum Route {
-    #[route("/")]
-    Home {},
-    #[route("/blog/:id")]
-    Blog { id: i32 },
-}
-#[inline_props]
-fn Blog(cx: Scope, id: i32) -> Element {
-    render! {
-        Link { to: Route::Home {}, "Go to counter" }
-        "Blog post {id}"
-    }
-}
-#[inline_props]
-fn Home(cx: Scope) -> Element {
-    let mut count = use_state(cx, || 0);
-    
-
-    cx.render(rsx! {
-        Link {
-            to: Route::Blog {
-                id: *count.get()
-            },
-            "Go to blog"
-        }
-        div {
-            h1 { "High-Five counter: {count}" }
-            button { onclick: move |_| count += 1, "Up high!" }
-            button { onclick: move |_| count -= 1, "Down low!" }
-            
-        }
-    })
-}
-
 
 

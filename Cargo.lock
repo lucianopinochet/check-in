@@ -292,11 +292,19 @@ checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 name = "check-in"
 version = "0.1.0"
 dependencies = [
+<<<<<<< HEAD
+=======
+ "csv",
+>>>>>>> 203d7a3d62b40effa51c2d8b384ba0d06dddce46
  "dioxus",
  "dioxus-desktop",
  "dioxus-logger",
  "dioxus-router",
  "log",
+<<<<<<< HEAD
+=======
+ "serde",
+>>>>>>> 203d7a3d62b40effa51c2d8b384ba0d06dddce46
 ]
 
 [[package]]
@@ -476,6 +484,30 @@ dependencies = [
 ]
 
 [[package]]
+<<<<<<< HEAD
+=======
+name = "csv"
+version = "1.2.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "626ae34994d3d8d668f4269922248239db4ae42d538b14c398b74a52208e8086"
+dependencies = [
+ "csv-core",
+ "itoa 1.0.9",
+ "ryu",
+ "serde",
+]
+
+[[package]]
+name = "csv-core"
+version = "0.1.10"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2b2466559f260f48ad25fe6317b3c8dac77b5bdb5763ac7d9d6103530663bc90"
+dependencies = [
+ "memchr",
+]
+
+[[package]]
+>>>>>>> 203d7a3d62b40effa51c2d8b384ba0d06dddce46
 name = "darling"
 version = "0.20.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1745,9 +1777,15 @@ checksum = "2532096657941c2fea9c289d370a250971c689d4f143798ff67113ec042024a5"
 
 [[package]]
 name = "memchr"
+<<<<<<< HEAD
 version = "2.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f478948fd84d9f8e86967bf432640e46adfb5a4bd4f14ef7e864ab38220534ae"
+=======
+version = "2.6.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5486aed0026218e61b8a01d5fbd5a0a134649abb71a0e53b7bc088529dced86e"
+>>>>>>> 203d7a3d62b40effa51c2d8b384ba0d06dddce46
 
 [[package]]
 name = "memoffset"
