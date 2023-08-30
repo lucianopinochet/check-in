@@ -64,6 +64,7 @@ pub fn Push(cx: Scope) -> Element{
     println!("{:?}",record)
   }
   let par = use_state(cx, ||("".to_string(), "".to_string(), "".to_string()));  
+  let (name, last, age) =
   render!{
     "Push"
     form{
