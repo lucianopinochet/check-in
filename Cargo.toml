@@ -16,4 +16,6 @@ dioxus-router = { version = "0.4" }
 # Debug
 log = "0.4.19"
 dioxus-logger = "0.4.1"
+csv = "1.2.2"
+serde = "1.0.188"
 
