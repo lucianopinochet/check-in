@@ -1,14 +1,13 @@
 #![allow(non_snake_case)]
+#![windows_subsystem = "windows"]
 
 mod components;
 
 use dioxus_router::prelude::*;
 use dioxus::prelude::*;
 use log::LevelFilter;
-use components::*;
 use dioxus_desktop::tao::window::WindowBuilder;
-
-
+use components::*;
 #[rustfmt::skip]
 #[derive(Clone, Routable, Debug, PartialEq)]
 pub enum Route{
@@ -21,6 +20,8 @@ pub enum Route{
 	#[route("/..notfound")]
 	NotFound{}
 }
+
+
 fn main() {
     // Init debug
     dioxus_logger::init(LevelFilter::Info).expect("failed to init logger");    

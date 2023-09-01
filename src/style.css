@@ -22,3 +22,6 @@ table, th, td{
 a{
   text-decoration: none;
 }
+th{
+  width: 33%;
+};
