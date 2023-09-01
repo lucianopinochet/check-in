@@ -6,6 +6,8 @@ use dioxus_router::prelude::*;
 use dioxus::prelude::*;
 use log::LevelFilter;
 use components::*;
+use dioxus_desktop::tao::window::WindowBuilder;
+
 
 #[rustfmt::skip]
 #[derive(Clone, Routable, Debug, PartialEq)]
@@ -22,7 +24,7 @@ pub enum Route{
 fn main() {
     // Init debug
     dioxus_logger::init(LevelFilter::Info).expect("failed to init logger");    
-    dioxus_desktop::launch(app);
+    dioxus_desktop::launch_cfg(app, dioxus_desktop::Config::new().with_window(WindowBuilder::new().with_title("Check In").with_resizable(true)));
 }
 fn app(cx: Scope) -> Element {
     render!{
