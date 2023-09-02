@@ -23,7 +23,6 @@ pub enum Route{
 
 
 fn main() {
-    // Init debug
     dioxus_logger::init(LevelFilter::Info).expect("failed to init logger");    
     dioxus_desktop::launch_cfg(app, dioxus_desktop::Config::new().with_window(WindowBuilder::new().with_title("Check In").with_resizable(true)));
 }
