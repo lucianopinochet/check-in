@@ -1,8 +1,9 @@
 use dioxus::prelude::*;
 use std::fs::File;
 use csv::ReaderBuilder;
-
-type Records = (String, String, u8);
+use dioxus_free_icons::icons::fa_solid_icons::FaMagnifyingGlass;
+use dioxus_free_icons::Icon;
+type Records = (u16,String, String, u8);
 
 #[inline_props]
 pub fn Home(cx: Scope) -> Element{
@@ -12,7 +13,9 @@ pub fn Home(cx: Scope) -> Element{
   let file =  match File::open("data.csv"){
     Ok(file) => file,
     Err(_) => {
-      File::create("data.csv").unwrap();
+      let f = File::create("data.csv").unwrap();
+      let mut wtr = csv::Writer::from_writer(f);
+      wtr.write_record(&["id","name", "last", "age"]).unwrap();
       File::open("data.csv").unwrap()
     }
   };
@@ -21,19 +24,35 @@ pub fn Home(cx: Scope) -> Element{
     .comment(Some(b'#'))
     .from_reader(file);
   let node_list = rdr.deserialize();
-  let rendered_node = node_list.map(|result|{
-    let (name, last, age):Records = result.unwrap();
-    if !query_name.get().is_empty(){
-      if name.to_uppercase().starts_with(&query_name.get().to_uppercase()) || last.to_uppercase().starts_with(&query_name.get().to_uppercase()){
+  let rendered_body = node_list.map(|result|{
+    let (id, name, last, age ):Records = result.unwrap();
+    if !query_name.get().is_empty() && query_age.get().is_empty(){ 
+      if name.to_uppercase().contains(&query_name.get().to_uppercase()) || last.to_uppercase().contains(&query_name.get().to_uppercase()){
         render!{
-          tr{td{"{name}"}td{"{last}"}td{"{age}"}}
+          tr{td{"{id}"}td{"{name}"}td{"{last}"}td{"{age}"}}
+        }
+      }else{
+        render!{""}
+      }
+    }else if query_name.get().is_empty() && !query_age.get().is_empty(){
+      if age.to_string().to_uppercase().contains(&query_age.get().to_uppercase()){
+        render!{
+          tr{td{"{id}"}td{"{name}"}td{"{last}"}td{"{age}"}}
+        }
+      }else{
+        render!{""}
+      }
+    }else if !query_name.get().is_empty() && !query_age.get().is_empty(){
+      if (name.to_uppercase().contains(&query_name.get().to_uppercase()) || last.to_uppercase().contains(&query_name.get().to_uppercase())) && age.to_string().to_uppercase().contains(&query_age.get().to_uppercase()){
+        render!{
+          tr{td{"{id}"}td{"{name}"}td{"{last}"}td{"{age}"}}
         }
       }else{
         render!{""}
       }
     }else{
       render!{
-        tr{td{"{name}"}td{"{last}"}td{"{age}"}}
+        tr{td{"{id}"}td{"{name}"}td{"{last}"}td{"{age}"}}
       }
     }
   });
@@ -41,14 +60,24 @@ pub fn Home(cx: Scope) -> Element{
     [false, false] => render!{
       tr{
         th{
+          style:"width:10%",
+          h4{"id"}
+        }
+        th{
           onclick:|_| {
             let mut toogle = toogle_query.get().clone();
             toogle[0] = true;
             toogle_query.set(toogle);
           },
           colspan:"2",
-          style:"width:66%",
-          "name"
+          style:"width:60%",
+          h4{"name"},
+          Icon {
+            width:15,
+            height:15,
+            icon: FaMagnifyingGlass,
+            class:"icon"
+          },
         }
         th{
           onclick:|_| {
@@ -56,16 +85,27 @@ pub fn Home(cx: Scope) -> Element{
             toogle[1] = true;
             toogle_query.set(toogle);
           },
-          style:"width:33%",
-          "age"
+          style:"width:30%",
+          h4{"age"},
+          Icon {
+            width:15,
+            height:15,
+            icon: FaMagnifyingGlass,
+            class:"icon"
+          },
         }
       }
     },
     [true, false] => render!{
       tr{
         th{
+          style:"width:10%",
+          h4{"id"}
+        }
+        th{
           colspan:"2",
           style:"width:66%",
+          h4{"name"},
           form{
             prevent_default:"onsubmit",
             input{
@@ -82,12 +122,22 @@ pub fn Home(cx: Scope) -> Element{
             toogle_query.set(toogle);
           },
           style:"width:33%",
-          "age"
+          h4{"age"},
+          Icon {
+            width:15,
+            height:15,
+            icon: FaMagnifyingGlass,
+            class:"icon"
+          },
         }
       }
     },
     [false,true] =>render!{
       tr{
+        th{
+          style:"width:10%",
+          h4{"id"}
+        }
         th{
           onclick:|_| {
             let mut toogle = toogle_query.get().clone();
@@ -96,10 +146,17 @@ pub fn Home(cx: Scope) -> Element{
           },
           colspan:"2",
           style:"width:66%",
-          "name"
+          h4{"name"},
+          Icon {
+            width:15,
+            height:15,
+            icon: FaMagnifyingGlass,
+            class:"icon"
+          },
         }
         th{
           style:"width:33%",
+          h4{"age"},
           form{
             prevent_default:"onsubmit",
             input{
@@ -114,8 +171,13 @@ pub fn Home(cx: Scope) -> Element{
     [true, true] => render!{
       tr{
         th{
+          style:"width:10%",
+          h4{"id"}
+        }
+        th{
           colspan:"2",
           style:"width:66%",
+          h4{"name"},
           form{
             prevent_default:"onsubmit",
             input{
@@ -127,6 +189,7 @@ pub fn Home(cx: Scope) -> Element{
         }
         th{
           style:"width:33%",
+          h4{"age"},
           form{
             prevent_default:"onsubmit",
             input{
@@ -142,7 +205,7 @@ pub fn Home(cx: Scope) -> Element{
   render!{
     table{
       rendered_head
-      rendered_node
+      rendered_body
     }
   }
 }
