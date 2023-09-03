@@ -15,7 +15,7 @@ pub fn Home(cx: Scope) -> Element{
     Err(_) => {
       let f = File::create("data.csv").unwrap();
       let mut wtr = csv::Writer::from_writer(f);
-      wtr.write_record(&["id","name", "last", "age"]).unwrap();
+      wtr.write_record(&["Id","Name", "last", "Age"]).unwrap();
       File::open("data.csv").unwrap()
     }
   };
@@ -24,8 +24,12 @@ pub fn Home(cx: Scope) -> Element{
     .comment(Some(b'#'))
     .from_reader(file);
   let node_list = rdr.deserialize();
+  let node_list = node_list.map(|res|{
+    let (id, name, last, age):Records = res.unwrap();
+    (id,name,last,age)
+  });
   let rendered_body = node_list.map(|result|{
-    let (id, name, last, age ):Records = result.unwrap();
+    let (id, name, last, age ):Records = result;
     if !query_name.get().is_empty() && query_age.get().is_empty(){ 
       if name.to_uppercase().contains(&query_name.get().to_uppercase()) || last.to_uppercase().contains(&query_name.get().to_uppercase()){
         render!{
@@ -55,13 +59,13 @@ pub fn Home(cx: Scope) -> Element{
         tr{td{"{id}"}td{"{name}"}td{"{last}"}td{"{age}"}}
       }
     }
-  });
+  });  
   let rendered_head = match toogle_query.get().clone(){
     [false, false] => render!{
       tr{
         th{
           style:"width:10%",
-          h4{"id"}
+          h4{"Id"}
         }
         th{
           onclick:|_| {
@@ -71,7 +75,7 @@ pub fn Home(cx: Scope) -> Element{
           },
           colspan:"2",
           style:"width:60%",
-          h4{"name"},
+          h4{"Name"},
           Icon {
             width:15,
             height:15,
@@ -86,7 +90,7 @@ pub fn Home(cx: Scope) -> Element{
             toogle_query.set(toogle);
           },
           style:"width:30%",
-          h4{"age"},
+          h4{"Age"},
           Icon {
             width:15,
             height:15,
@@ -100,12 +104,12 @@ pub fn Home(cx: Scope) -> Element{
       tr{
         th{
           style:"width:10%",
-          h4{"id"}
+          h4{"Id"}
         }
         th{
           colspan:"2",
-          style:"width:66%",
-          h4{"name"},
+          style:"width:60%",
+          h4{"Name"},
           form{
             prevent_default:"onsubmit",
             input{
@@ -121,8 +125,8 @@ pub fn Home(cx: Scope) -> Element{
             toogle[1] = true;
             toogle_query.set(toogle);
           },
-          style:"width:33%",
-          h4{"age"},
+          style:"width:30%",
+          h4{"Age"},
           Icon {
             width:15,
             height:15,
@@ -136,7 +140,7 @@ pub fn Home(cx: Scope) -> Element{
       tr{
         th{
           style:"width:10%",
-          h4{"id"}
+          h4{"Id"}
         }
         th{
           onclick:|_| {
@@ -145,8 +149,8 @@ pub fn Home(cx: Scope) -> Element{
             toogle_query.set(toogle);
           },
           colspan:"2",
-          style:"width:66%",
-          h4{"name"},
+          style:"width:60%",
+          h4{"Name"},
           Icon {
             width:15,
             height:15,
@@ -155,8 +159,8 @@ pub fn Home(cx: Scope) -> Element{
           },
         }
         th{
-          style:"width:33%",
-          h4{"age"},
+          style:"width:30%",
+          h4{"Age"},
           form{
             prevent_default:"onsubmit",
             input{
@@ -172,12 +176,12 @@ pub fn Home(cx: Scope) -> Element{
       tr{
         th{
           style:"width:10%",
-          h4{"id"}
+          h4{"Id"}
         }
         th{
           colspan:"2",
-          style:"width:66%",
-          h4{"name"},
+          style:"width:60%",
+          h4{"Name"},
           form{
             prevent_default:"onsubmit",
             input{
@@ -188,8 +192,8 @@ pub fn Home(cx: Scope) -> Element{
           },
         }
         th{
-          style:"width:33%",
-          h4{"age"},
+          style:"width:30%",
+          h4{"Age"},
           form{
             prevent_default:"onsubmit",
             input{

@@ -12,7 +12,6 @@ pub fn Push(cx: Scope) -> Element{
     first = false;
     let record = res.unwrap();
     id = record.get(0).unwrap().parse::<u16>().unwrap();
-    println!("{record:?}");
   }
   let file =  match File::options().append(true).open("data.csv"){
     Ok(file) => {

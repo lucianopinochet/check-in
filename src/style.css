@@ -1,6 +1,27 @@
+body{
+  margin: 0;
+  padding: 0;
+}
 .navbar{
   display: flex;
   flex-direction: row;
+  width: 100%;
+  height: 20px;
+}
+.navbar a{
+  width: 50%;
+  height: 20px;
+  text-align: center;
+  text-decoration: none;
+  background-color: #aaa;
+}
+a:link, a:visited, a:link:active, a:visited:active{
+  color: black;
+  text-decoration: none;
+}
+.navbar a:hover{
+  background-color: #888;
+  cursor: grab;
 }
 .check-in-form{
   display: flex;
@@ -34,4 +55,10 @@ tr:first-child{
 }
 .icon:hover{
   cursor: grab;
+}
+th form input{
+  margin: 0;
+  padding: 0;
+  width: 33%;
+  border: 1px solid black;
 }
