@@ -1,7 +1,12 @@
 use dioxus::prelude::*;
 use std::fs::File;
 use csv::ReaderBuilder;
-use dioxus_free_icons::icons::fa_solid_icons::FaMagnifyingGlass;
+use dioxus_free_icons::icons::{
+  fa_solid_icons::FaMagnifyingGlass,
+  bs_icons::BsInfoCircleFill,
+  // md_navigation_icons::MdDeleteForever,
+  md_action_icons::MdDeleteForever
+};
 use dioxus_free_icons::Icon;
 type Records = (u16,String, String, u8);
 
@@ -24,41 +29,204 @@ pub fn Home(cx: Scope) -> Element{
     .comment(Some(b'#'))
     .from_reader(file);
   let node_list = rdr.deserialize();
-  let node_list = node_list.map(|res|{
+  // let node_list = node_list.map(|res|{
+  //   let (id, name, last, age):Records = res.unwrap();
+  //   if !query_name.get().is_empty() && query_age.get().is_empty(){
+  //     if name.to_uppercase().contains(&query_name.get().to_uppercase()) || last.to_uppercase().contains(&query_name.get().to_uppercase()){
+  //       (id,name,last,age)
+  //     }
+  //   }else if query_name.get().is_empty() && !query_age.get().is_empty(){
+  //     if age.to_string().to_uppercase().contains(&query_age.get().to_uppercase()){
+  //       (id,name,last,age)
+  //     }
+  //   }else if !query_name.get().is_empty() && !query_age.get().is_empty(){
+  //     if (name.to_uppercase().contains(&query_name.get().to_uppercase()) || last.to_uppercase().contains(&query_name.get().to_uppercase())) && age.to_string().to_uppercase().contains(&query_age.get().to_uppercase()){
+  //       (id,name,last,age)
+  //     }
+  //   }else{
+  //     (id,name,last,age)
+  //   }
+  // });
+  let node_list:Vec<_> = node_list.map(|res|{
     let (id, name, last, age):Records = res.unwrap();
     (id,name,last,age)
-  });
-  let rendered_body = node_list.map(|result|{
-    let (id, name, last, age ):Records = result;
-    if !query_name.get().is_empty() && query_age.get().is_empty(){ 
-      if name.to_uppercase().contains(&query_name.get().to_uppercase()) || last.to_uppercase().contains(&query_name.get().to_uppercase()){
-        render!{
-          tr{td{"{id}"}td{"{name}"}td{"{last}"}td{"{age}"}}
+  }).collect();
+  let node_list:Vec<_> = node_list.iter().filter(|&row|{
+    let (_id, name, last, age) = row.clone();
+    if !query_name.get().is_empty() && query_age.get().is_empty(){
+          if name.to_uppercase().contains(&query_name.get().to_uppercase()) || last.to_uppercase().contains(&query_name.get().to_uppercase()){
+            true
+          }else{
+            false
+          }
+        }else if query_name.get().is_empty() && !query_age.get().is_empty(){
+          if age.to_string().to_uppercase().contains(&query_age.get().to_uppercase()){
+            true
+          }else{
+            false
+          }
+        }else if !query_name.get().is_empty() && !query_age.get().is_empty(){
+          if (name.to_uppercase().contains(&query_name.get().to_uppercase()) || last.to_uppercase().contains(&query_name.get().to_uppercase())) && age.to_string().to_uppercase().contains(&query_age.get().to_uppercase()){
+            true
+          }else{
+            false
+          }
+        }else{
+          true
         }
-      }else{
-        render!{""}
-      }
-    }else if query_name.get().is_empty() && !query_age.get().is_empty(){
-      if age.to_string().to_uppercase().contains(&query_age.get().to_uppercase()){
-        render!{
-          tr{td{"{id}"}td{"{name}"}td{"{last}"}td{"{age}"}}
+
+  }).collect();
+  let rendered_body = node_list.iter().map(|result|{
+    let (id, name, last, age ):Records = **result;
+    render!{
+      tr{td{"{id}"}td{"{name}"}td{"{last}"}td{"{age}"}
+        td{
+          button{
+            onclick:|e|{
+              println!("{e:?}");
+            },
+            class:"icon-option",
+            Icon {
+            width:15,
+            height:15,
+            icon: BsInfoCircleFill,
+            }
+            }
+          }
+          td{
+            button{
+              onclick:|e|{
+                println!("{e:?}");
+              },
+              class:"icon-option",
+              Icon {
+              width:15,
+              height:15,
+              icon: MdDeleteForever,
+              }
+            }
+          }
         }
-      }else{
-        render!{""}
-      }
-    }else if !query_name.get().is_empty() && !query_age.get().is_empty(){
-      if (name.to_uppercase().contains(&query_name.get().to_uppercase()) || last.to_uppercase().contains(&query_name.get().to_uppercase())) && age.to_string().to_uppercase().contains(&query_age.get().to_uppercase()){
-        render!{
-          tr{td{"{id}"}td{"{name}"}td{"{last}"}td{"{age}"}}
-        }
-      }else{
-        render!{""}
-      }
-    }else{
-      render!{
-        tr{td{"{id}"}td{"{name}"}td{"{last}"}td{"{age}"}}
-      }
     }
+    // if !query_name.get().is_empty() && query_age.get().is_empty(){ 
+    //   if name.to_uppercase().contains(&query_name.get().to_uppercase()) || last.to_uppercase().contains(&query_name.get().to_uppercase()){
+    //     render!{
+    //       tr{td{"{id}"}td{"{name}"}td{"{last}"}td{"{age}"}
+    //       td{
+    //         button{
+    //           onclick:|e|{
+    //             println!("{e:?}");
+    //           },
+    //           class:"icon-option",
+    //           Icon {
+    //           width:15,
+    //           height:15,
+    //           icon: BsInfoCircleFill,
+    //           }
+    //           }
+    //         }
+    //         td{
+    //           button{
+    //             onclick:|e|{
+    //               println!("{e:?}");
+    //             },
+    //             class:"icon-option",
+    //             Icon {
+    //             width:15,
+    //             height:15,
+    //             icon: MdDeleteForever,
+    //             }
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }else{
+    //     render!{""}
+    //   }
+    // }else if query_name.get().is_empty() && !query_age.get().is_empty(){
+    //   if age.to_string().to_uppercase().contains(&query_age.get().to_uppercase()){
+    //     render!{
+    //       tr{td{"{id}"}td{"{name}"}td{"{last}"}td{"{age}"}
+    //       td{
+    //         button{
+    //             class:"icon-option",
+    //             Icon {
+    //             width:15,
+    //             height:15,
+    //             icon: BsInfoCircleFill,
+    //             }
+    //           }
+    //         }
+    //         td{
+    //           button{
+    //             class:"icon-option",
+    //             Icon {
+    //             width:15,
+    //             height:15,
+    //             icon: MdDeleteForever,
+    //             }
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }else{
+    //     render!{""}
+    //   }
+    // }else if !query_name.get().is_empty() && !query_age.get().is_empty(){
+    //   if (name.to_uppercase().contains(&query_name.get().to_uppercase()) || last.to_uppercase().contains(&query_name.get().to_uppercase())) && age.to_string().to_uppercase().contains(&query_age.get().to_uppercase()){
+    //     render!{
+    //       tr{td{"{id}"}td{"{name}"}td{"{last}"}td{"{age}"}
+    //       td{
+    //         button{
+    //             class:"icon-option",
+    //             Icon {
+    //             width:15,
+    //             height:15,
+    //             icon: BsInfoCircleFill,
+    //             }
+    //           }
+    //         }
+    //         td{
+    //           button{
+    //             class:"icon-option",
+    //             Icon {
+    //             width:15,
+    //             height:15,
+    //             icon: MdDeleteForever,
+    //             }
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }else{
+    //     render!{""}
+    //   }
+    // }else{
+    //   render!{
+    //     tr{td{"{id}"}td{"{name}"}td{"{last}"}td{"{age}"}
+    //       td{
+    //         button{
+    //           class:"icon-option",
+    //           Icon {
+    //           width:15,
+    //           height:15,
+    //           icon: BsInfoCircleFill,
+    //           }
+    //         }
+    //       }
+    //       td{
+    //         button{
+    //           class:"icon-option",
+    //           Icon {
+    //           width:15,
+    //           height:15,
+    //           icon: MdDeleteForever,
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
   });  
   let rendered_head = match toogle_query.get().clone(){
     [false, false] => render!{
@@ -68,35 +236,46 @@ pub fn Home(cx: Scope) -> Element{
           h4{"Id"}
         }
         th{
-          onclick:|_| {
-            let mut toogle = toogle_query.get().clone();
-            toogle[0] = true;
-            toogle_query.set(toogle);
-          },
           colspan:"2",
-          style:"width:60%",
-          h4{"Name"},
-          Icon {
-            width:15,
-            height:15,
-            icon: FaMagnifyingGlass,
-            class:"icon"
-          },
+          style:"width:55%",
+          div{
+            class:"div-head",
+            onclick:|_| {
+              let mut toogle = toogle_query.get().clone();
+              toogle[0] = true;
+              toogle_query.set(toogle);
+            },
+            h4{"Name"},
+            Icon {
+              width:15,
+              height:15,
+              icon: FaMagnifyingGlass,
+              class:"icon"
+            },
+          }
         }
         th{
-          onclick:|_| {
-            let mut toogle = toogle_query.get().clone();
-            toogle[1] = true;
-            toogle_query.set(toogle);
-          },
-          style:"width:30%",
-          h4{"Age"},
-          Icon {
-            width:15,
-            height:15,
-            icon: FaMagnifyingGlass,
-            class:"icon"
-          },
+          style:"width:25%",
+          div{
+            class:"div-head",
+            onclick:|_| {
+              let mut toogle = toogle_query.get().clone();
+              toogle[1] = true;
+              toogle_query.set(toogle);
+            },
+            h4{"Age"},
+            Icon {
+              width:15,
+              height:15,
+              icon: FaMagnifyingGlass,
+              class:"icon"
+            },
+          }
+        }
+        th{
+          colspan:"2",
+          style:"width:10%",
+          h4{"Options"}
         }
       }
     },
@@ -108,7 +287,7 @@ pub fn Home(cx: Scope) -> Element{
         }
         th{
           colspan:"2",
-          style:"width:60%",
+          style:"width:55%",
           h4{"Name"},
           form{
             prevent_default:"onsubmit",
@@ -120,19 +299,27 @@ pub fn Home(cx: Scope) -> Element{
           },
         }
         th{
-          onclick:|_| {
-            let mut toogle = toogle_query.get().clone();
-            toogle[1] = true;
-            toogle_query.set(toogle);
-          },
-          style:"width:30%",
-          h4{"Age"},
-          Icon {
-            width:15,
-            height:15,
-            icon: FaMagnifyingGlass,
-            class:"icon"
-          },
+          style:"width:25%",
+          div{
+            class:"div-head",
+            onclick:|_| {
+              let mut toogle = toogle_query.get().clone();
+              toogle[1] = true;
+              toogle_query.set(toogle);
+            },
+            h4{"Age"},
+            Icon {
+              width:15,
+              height:15,
+              icon: FaMagnifyingGlass,
+              class:"icon"
+            },
+          }
+        }
+        th{
+          colspan:"2",
+          style:"width:10%",
+          h4{"Options"}
         }
       }
     },
@@ -143,23 +330,26 @@ pub fn Home(cx: Scope) -> Element{
           h4{"Id"}
         }
         th{
-          onclick:|_| {
-            let mut toogle = toogle_query.get().clone();
-            toogle[0] = true;
-            toogle_query.set(toogle);
-          },
           colspan:"2",
-          style:"width:60%",
-          h4{"Name"},
-          Icon {
-            width:15,
-            height:15,
-            icon: FaMagnifyingGlass,
-            class:"icon"
-          },
+          style:"width:55%",
+          div{
+            class:"div-head",
+            onclick:|_| {
+              let mut toogle = toogle_query.get().clone();
+              toogle[0] = true;
+              toogle_query.set(toogle);
+            },
+            h4{"Name"},
+            Icon {
+              width:15,
+              height:15,
+              icon: FaMagnifyingGlass,
+              class:"icon"
+            },
+          }
         }
         th{
-          style:"width:30%",
+          style:"width:25%",
           h4{"Age"},
           form{
             prevent_default:"onsubmit",
@@ -169,6 +359,11 @@ pub fn Home(cx: Scope) -> Element{
               oninput:move |e| query_age.set(e.value.clone())
             }
           }
+        }
+        th{
+          colspan:"2",
+          style:"width:10%",
+          h4{"Options"}
         }
       }
     },
@@ -180,7 +375,7 @@ pub fn Home(cx: Scope) -> Element{
         }
         th{
           colspan:"2",
-          style:"width:60%",
+          style:"width:55%",
           h4{"Name"},
           form{
             prevent_default:"onsubmit",
@@ -192,7 +387,7 @@ pub fn Home(cx: Scope) -> Element{
           },
         }
         th{
-          style:"width:30%",
+          style:"width:25%",
           h4{"Age"},
           form{
             prevent_default:"onsubmit",
@@ -202,6 +397,11 @@ pub fn Home(cx: Scope) -> Element{
               oninput:move |e| query_age.set(e.value.clone())
             }
           }
+        }
+        th{
+          colspan:"2",
+          style:"width:10%",
+          h4{"Options"}
         }
       }
     }

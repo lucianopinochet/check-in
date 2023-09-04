@@ -1,3 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+*{
+  font-family: 'Roboto', sans-serif;
+}
 body{
   margin: 0;
   padding: 0;
@@ -47,9 +51,6 @@ h4{
   margin: 0;
   padding: 0;
 }
-th{
-  width: 33%;
-}
 tr:first-child{
   display: table-row;
 }
@@ -61,4 +62,18 @@ th form input{
   padding: 0;
   width: 33%;
   border: 1px solid black;
+}
+.icon-option{
+  justify-content: center;
+  text-align: center;
+}
+.icon-option:hover{
+  cursor: grab;
+}
+.div-head{
+  display: flex;
+  flex-direction: row;
+  text-align: center;
+  justify-content: center;
+  gap: 10px;
 }

@@ -13,5 +13,5 @@ log = "0.4.19"
 dioxus-logger = "0.4.1"
 csv = "1.2.2"
 serde = "1.0.188"
-dioxus-free-icons = {version = "0.7.0", features = ["font-awesome-solid"]}
+dioxus-free-icons = {version = "0.7.0", features = ["font-awesome-solid", "bootstrap", "material-design-icons-navigation", "material-design-icons-action"]}
 
