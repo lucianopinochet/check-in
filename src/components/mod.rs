@@ -6,3 +6,5 @@ mod Push;
 pub use Push::*;
 mod NotFound;
 pub use NotFound::*;
+mod Record;
+pub use Record::*;

@@ -1,5 +1,5 @@
 #![allow(non_snake_case)]
-#![windows_subsystem = "windows"]
+// #![windows_subsystem = "windows"]
 
 mod components;
 
@@ -16,6 +16,10 @@ pub enum Route{
     Home{},
     #[route("/push")]
     Push{},
+    #[route("/:id")]
+    Record{
+      id:u16
+    },
   #[end_layout]
 	#[route("/..notfound")]
 	NotFound{}

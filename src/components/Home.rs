@@ -1,14 +1,15 @@
+use dioxus_router::prelude::*;
 use dioxus::prelude::*;
 use std::fs::File;
 use csv::ReaderBuilder;
 use dioxus_free_icons::icons::{
   fa_solid_icons::FaMagnifyingGlass,
   bs_icons::{BsInfoCircleFill, BsArrowDownCircleFill},
-  // md_navigation_icons::MdDeleteForever,
   md_action_icons::MdDeleteForever
 };
+use crate::Route;
 use dioxus_free_icons::Icon;
-type Records = (u16,String, String, u8);
+pub type Records = (u16,String, String, u8);
 enum Sort{
   UP,
   DOWN,
@@ -102,16 +103,16 @@ pub fn Home(cx: Scope) -> Element{
     render!{
       tr{td{"{id}"}td{"{name}"}td{"{last}"}td{"{age}"}
         td{
-          div{
-            onclick:|e|{
-              println!("{e:?}");
+          Link{
+            to:Route::Record{
+              id:id
             },
             class:"icon-option",
             Icon {
-            width:15,
-            height:15,
-            icon: BsInfoCircleFill,
-            class:"icon"
+              width:15,
+              height:15,
+              icon: BsInfoCircleFill,
+              class:"icon"
             }
             }
           }
@@ -122,10 +123,10 @@ pub fn Home(cx: Scope) -> Element{
               },
               class:"icon-option",
               Icon {
-              width:15,
-              height:15,
-              icon: MdDeleteForever,
-              class:"icon"
+                width:15,
+                height:15,
+                icon: MdDeleteForever,
+                class:"icon"
               }
             }
           }

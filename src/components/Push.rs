@@ -1,4 +1,4 @@
-use csv::Reader;
+use csv::{Reader, Writer};
 use dioxus::prelude::*;
 use std::fs::File;
 
@@ -21,10 +21,10 @@ pub fn Push(cx: Scope) -> Element{
       File::options().append(true).open("data.csv").unwrap()
     }
   };
-  let mut wtr  = csv::Writer::from_writer(file);
+  let mut wtr  = Writer::from_writer(file);
   render!{
     form{
-      class:"check-io-form",
+      class:"check-in-form",
       prevent_default:"onsubmit",
       onsubmit: move |e|{
         if !first{
