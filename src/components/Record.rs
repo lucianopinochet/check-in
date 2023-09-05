@@ -1,15 +1,9 @@
 use std::fs::File;
 use dioxus::prelude::*;
-use csv::{Reader, Writer};
+use csv::{Reader, Writer, StringRecord};
+use dioxus_router::prelude::Link;
 use crate::components::Home::Records;
-use serde::Deserialize;
-#[derive(Debug, Deserialize)]
-struct Record{
-  id:u16,
-  name:String,
-  last:String,
-  age:u8
-}
+use crate::Route;
 #[inline_props]
 pub fn Record(cx:Scope, id:u16) -> Element{
   let mut rdr = Reader::from_reader(File::open("data.csv").unwrap());
@@ -22,23 +16,13 @@ pub fn Record(cx:Scope, id:u16) -> Element{
       break
     }
   };
-  let mut rdr = Reader::from_reader(File::open("data.csv").unwrap());
+  let name = use_state(cx, || record.1);
+  let last = use_state(cx, ||record.2);
+  let age = use_state(cx, ||record.3.to_string());
   render!{
     form{
       class:"check-in-form",
       prevent_default:"onsubmit",
-      onsubmit:move |e|{
-        let mut wrt = Writer::from_writer(File::open("dataa.csv").unwrap());
-        for rec in rdr.deserialize(){
-          let rec:Record = rec.unwrap();
-          if rec.id == record.0{
-            wrt.write_record(&[rec.id.to_string(), e.values.get("name").unwrap()[0].clone(), e.values.get("last").unwrap()[0].clone(), e.values.get("age").unwrap()[0].clone()]).unwrap();
-          }else{
-            wrt.write_record(&[rec.id.to_string(), rec.name, rec.last, rec.age.to_string()]).unwrap();
-          };
-        }
-        wrt.flush().unwrap();
-      },
       div{
         label{
           r#for:"name",
@@ -47,7 +31,8 @@ pub fn Record(cx:Scope, id:u16) -> Element{
         input{
           r#type:"text",
           name:"name",
-          value:"{record.1}"
+          value:"{name}",
+          oninput:move|e|name.set(e.value.clone()),
         },
       },
       div{
@@ -58,7 +43,8 @@ pub fn Record(cx:Scope, id:u16) -> Element{
         input{
           r#type:"text",
           name:"last",
-          value:"{record.2}"
+          value:"{last}",
+          oninput:move|e|last.set(e.value.clone())
         },
       },
       div{
@@ -69,11 +55,34 @@ pub fn Record(cx:Scope, id:u16) -> Element{
         input{
           r#type:"number",
           name:"age",
-          value:"{record.3}"
+          value:"{age}",
+          oninput:move|e|age.set(e.value.clone())
         }
       },
-      input{
-        r#type:"submit",
+      Link{
+        to:Route::Home{},
+        onclick:move |_|{
+          let mut rdr = Reader::from_path("data.csv").unwrap();
+          let headers = rdr.headers().unwrap().clone();
+          let mut records:Vec<StringRecord> = Vec::new();
+          for result in rdr.records(){
+            let record = result.unwrap();
+            if record.get(0).unwrap() == id.to_string(){
+              records.push(StringRecord::from(vec![id.to_string(), name.get().clone(), last.get().clone(), age.get().clone()]));
+            }else{
+              records.push(record);
+            }
+          }
+          let mut wrt = Writer::from_path("data.csv").unwrap();
+          wrt.write_record(&headers).unwrap();
+          for record in records{
+            wrt.write_record(&record).unwrap();
+          }
+          wrt.flush().unwrap();
+        },
+        input{
+          r#type:"submit",
+        }
       }
     }
   }

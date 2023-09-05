@@ -1,7 +1,4 @@
 id,name,last,age
-0,enrique,iglesias,60
-1,luis,miguel,55
-2,Luciano,Pinochet,20
 3,martin,le-cerf,19
 4,joquin,valenzuela,21
 5,marcelo,blanco,20
@@ -9,5 +6,4 @@ id,name,last,age
 7,martin,concha,19
 8,clemente,pinochet,11
 9,facundo,pinochet,9
-10,pedro,pascal,45
-11,leonardo,dicaprio,50
+10,Luciano,PInochet,20

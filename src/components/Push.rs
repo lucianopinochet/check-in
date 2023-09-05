@@ -1,7 +1,8 @@
 use csv::{Reader, Writer};
 use dioxus::prelude::*;
+use dioxus_router::prelude::Link;
 use std::fs::File;
-
+use crate::Route;
 #[inline_props]
 pub fn Push(cx: Scope) -> Element{
   let mut id:u16 = 0;
@@ -22,18 +23,13 @@ pub fn Push(cx: Scope) -> Element{
     }
   };
   let mut wtr  = Writer::from_writer(file);
+  let name = use_state(cx, || "".to_string());
+  let last = use_state(cx, ||"".to_string());
+  let age = use_state(cx, ||0);
   render!{
     form{
       class:"check-in-form",
       prevent_default:"onsubmit",
-      onsubmit: move |e|{
-        if !first{
-          id+=1;
-        }
-        let formated = format!("{id}").to_string();
-        wtr.write_record(&[ formated, e.values.get("name").unwrap()[0].clone(), e.values.get("last").unwrap()[0].clone(), e.values.get("age").unwrap()[0].clone()]).unwrap();
-        wtr.flush().unwrap();
-      },
       div{
         label{
           r#for:"name",
@@ -42,6 +38,8 @@ pub fn Push(cx: Scope) -> Element{
         input{
           r#type:"text",
           name:"name",
+          value:"{name}",
+          oninput:move|e|name.set(e.value.clone()),
         },
       },
       div{
@@ -52,6 +50,8 @@ pub fn Push(cx: Scope) -> Element{
         input{
           r#type:"text",
           name:"last",
+          value:"{last}",
+          oninput:move|e|last.set(e.value.clone()),
         },
       },
       div{
@@ -62,10 +62,23 @@ pub fn Push(cx: Scope) -> Element{
         input{
           r#type:"number",
           name:"age",
+          value:"{age}",
+          oninput:move|e|age.set(e.value.clone().parse::<u8>().unwrap()),
         }
       },
-      input{
-        r#type:"submit"
+      Link{
+        to:Route::Home{},
+        onclick:move|_|{
+          if !first{
+            id+=1;
+          }
+          let formated = format!("{id}").to_string();
+          wtr.write_record(&[ formated, name.get().clone(), last.get().clone(), age.get().clone().to_string()]).unwrap();
+          wtr.flush().unwrap();
+        },
+        input{
+          r#type:"submit"
+        }
       }
     }
   }
