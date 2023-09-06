@@ -1,5 +1,5 @@
 #![allow(non_snake_case)]
-// #![windows_subsystem = "windows"]
+#![windows_subsystem = "windows"]
 
 mod components;
 

@@ -3,9 +3,8 @@ use dioxus::prelude::*;
 use std::fs::File;
 use csv::{ReaderBuilder, Reader, StringRecord, Writer};
 use dioxus_free_icons::icons::{
-  fa_solid_icons::FaMagnifyingGlass,
+  fa_solid_icons::{FaMagnifyingGlass, FaDeleteLeft},
   bs_icons::{BsInfoCircleFill, BsArrowDownCircleFill},
-  md_action_icons::MdDeleteForever
 };
 use crate::Route;
 use dioxus_free_icons::Icon;
@@ -103,22 +102,24 @@ pub fn Home(cx: Scope) -> Element{
     render!{
       tr{td{"{id}"}td{"{name}"}td{"{last}"}td{"{age}"}
         td{
-          Link{
-            to:Route::Record{
-              id:id
-            },
+          div{
             class:"icon-option",
-            Icon {
-              width:15,
-              height:15,
-              icon: BsInfoCircleFill,
-              class:"icon"
+            Link{
+              to:Route::Record{
+                id:id
+              },
+              Icon {
+                width:15,
+                height:15,
+                icon: BsInfoCircleFill,
+                class:"icon"
+              }
             }
-            }
+          }
         }
         td{
-          Link{
-            to:Route::Home {},
+          div{
+            class:"icon-option",
             onclick:move|_|{
               let mut rdr = Reader::from_path("data.csv").unwrap();
               let headers = rdr.headers().unwrap().clone();
@@ -135,19 +136,17 @@ pub fn Home(cx: Scope) -> Element{
                 wrt.write_record(&record).unwrap();
               }
               wrt.flush().unwrap();
+              query_age.set(query_age.get().clone());
             },
-            div{
-              class:"icon-option",
               Icon {
                 width:15,
                 height:15,
-                icon: MdDeleteForever,
+                icon: FaDeleteLeft,
                 class:"icon"
               }
-            }
           }
         }
-        }
+      }
     }
   });
   let render_name = if toogle_query.get()[0] == false{
