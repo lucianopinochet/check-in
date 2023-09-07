@@ -1,9 +1,9 @@
   use dioxus_router::prelude::*;
 use dioxus::prelude::*;
 use std::fs::File;
-use csv::{ReaderBuilder, Reader, StringRecord, Writer};
+use csv::ReaderBuilder;
 use dioxus_free_icons::icons::{
-  fa_solid_icons::{FaMagnifyingGlass, FaDeleteLeft},
+  fa_solid_icons::FaMagnifyingGlass,
   bs_icons::{BsInfoCircleFill, BsArrowDownCircleFill},
 };
 use crate::Route;
@@ -115,35 +115,6 @@ pub fn Home(cx: Scope) -> Element{
                 class:"icon"
               }
             }
-          }
-        }
-        td{
-          div{
-            class:"icon-option",
-            onclick:move|_|{
-              let mut rdr = Reader::from_path("data.csv").unwrap();
-              let headers = rdr.headers().unwrap().clone();
-              let mut records:Vec<StringRecord> = Vec::new();
-              for result in rdr.records(){
-                let record = result.unwrap();
-                if record.get(0).unwrap() != id.to_string(){
-                  records.push(record);
-                }
-              }
-              let mut wrt = Writer::from_path("data.csv").unwrap();
-              wrt.write_record(&headers).unwrap();
-              for record in records{
-                wrt.write_record(&record).unwrap();
-              }
-              wrt.flush().unwrap();
-              query_age.set(query_age.get().clone());
-            },
-              Icon {
-                width:15,
-                height:15,
-                icon: FaDeleteLeft,
-                class:"icon"
-              }
           }
         }
       }
@@ -335,7 +306,6 @@ pub fn Home(cx: Scope) -> Element{
         render_name,
         render_age,
         th{
-          colspan:"2",
           style:"width:10%",
           h4{"Options"}
         }

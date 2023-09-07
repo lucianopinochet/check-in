@@ -9,11 +9,11 @@ pub fn NavBar(cx: Scope) -> Element{
       class:"navbar",
       Link{
         to:Route::Home {},
-        "Push"
+        "Inicio"
       }
       Link{
         to:Route::Push {},
-        "Pull"
+        "Agregar"
       }  
     }
     Outlet::<Route> {}

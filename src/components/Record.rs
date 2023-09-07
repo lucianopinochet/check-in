@@ -6,6 +6,7 @@ use crate::components::Home::Records;
 use crate::Route;
 #[inline_props]
 pub fn Record(cx:Scope, id:u16) -> Element{
+  let delete  = use_state(cx, ||false);
   let mut rdr = Reader::from_reader(File::open("data.csv").unwrap());
   let records = rdr.deserialize();
   let mut record:Records = (0, "".to_string(), "".to_string(), 0);
@@ -19,6 +20,49 @@ pub fn Record(cx:Scope, id:u16) -> Element{
   let name = use_state(cx, || record.1);
   let last = use_state(cx, ||record.2);
   let age = use_state(cx, ||record.3.to_string());
+  let delete_button = if delete.get().clone() == false{
+      render!{
+        div{
+          input{
+            r#type:"button",
+            value:"Eliminar",
+            prevent_default:"onsubmit",
+            onclick:move|_|delete.set(true),
+          }
+        }
+      }
+  }else{
+    render!{
+      div{
+        Link{
+          to:Route::Home{},
+          onclick:move|_|{
+            let mut rdr = Reader::from_path("data.csv").unwrap();
+            let headers = rdr.headers().unwrap().clone();
+            let mut records:Vec<StringRecord> = Vec::new();
+            for result in rdr.records(){
+              let record = result.unwrap();
+              if record.get(0).unwrap() != id.to_string(){
+                records.push(record);
+              }
+            }
+            let mut wrt = Writer::from_path("data.csv").unwrap();
+            wrt.write_record(&headers).unwrap();
+            for record in records{
+              wrt.write_record(&record).unwrap();
+            }
+            wrt.flush().unwrap();
+          },
+          input{
+            r#type:"submit",
+            value:"Seguro?"
+          }
+      
+        }
+      }
+    }
+  };    
+
   render!{
     form{
       class:"check-in-form",
@@ -59,31 +103,41 @@ pub fn Record(cx:Scope, id:u16) -> Element{
           oninput:move|e|age.set(e.value.clone())
         }
       },
-      Link{
-        to:Route::Home{},
-        onclick:move |_|{
-          let mut rdr = Reader::from_path("data.csv").unwrap();
-          let headers = rdr.headers().unwrap().clone();
-          let mut records:Vec<StringRecord> = Vec::new();
-          for result in rdr.records(){
-            let record = result.unwrap();
-            if record.get(0).unwrap() == id.to_string(){
-              records.push(StringRecord::from(vec![id.to_string(), name.get().clone(), last.get().clone(), age.get().clone()]));
-            }else{
-              records.push(record);
+      div{
+        Link{
+          to:Route::Home{},
+          onclick:move |_|{
+            let mut rdr = Reader::from_path("data.csv").unwrap();
+            let headers = rdr.headers().unwrap().clone();
+            let mut records:Vec<StringRecord> = Vec::new();
+            for result in rdr.records(){
+              let record = result.unwrap();
+              if record.get(0).unwrap() == id.to_string(){
+                records.push(StringRecord::from(vec![id.to_string(), name.get().clone(), last.get().clone(), age.get().clone()]));
+              }else{
+                records.push(record);
+              }
             }
+            let mut wrt = Writer::from_path("data.csv").unwrap();
+            wrt.write_record(&headers).unwrap();
+            for record in records{
+              wrt.write_record(&record).unwrap();
+            }
+            wrt.flush().unwrap();
+          },
+          input{
+            r#type:"submit",
+            value:"Enviar"
           }
-          let mut wrt = Writer::from_path("data.csv").unwrap();
-          wrt.write_record(&headers).unwrap();
-          for record in records{
-            wrt.write_record(&record).unwrap();
-          }
-          wrt.flush().unwrap();
-        },
-        input{
-          r#type:"submit",
         }
-      }
+      },
+      delete_button,
     }
   }
 }
+// pub fn AppRecord(cx:Scope) -> Element{
+//   render!{
+//     "",
+    
+//   }
+// }

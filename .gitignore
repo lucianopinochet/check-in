@@ -1,5 +1,4 @@
-<<<<<<< HEAD
 /target
-=======
-target/
->>>>>>> 203d7a3d62b40effa51c2d8b384ba0d06dddce46
+/data.csv
+/dataa.csv
+/components/*/target
